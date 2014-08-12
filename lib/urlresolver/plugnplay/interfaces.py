@@ -72,7 +72,13 @@ class UrlResolver(Interface):
     '''
     (int) The order in which plugins will be tried. Lower numbers are tried 
     first.
-    '''    
+    '''
+    
+    labelName = "TREWQXFNLPBVMN"
+    '''(str) Video stream name, should be updated when a vaild URL is found'''
+    
+    labelIcon = None
+    '''(???) Not sure about type yet, icon for stream'''
 
     class unresolvable():
         '''
@@ -137,6 +143,10 @@ class UrlResolver(Interface):
 
     def get_host_and_id(self, url):
         not_implemented(self)
+    
+    def get_media_labels(self):
+        item = {'title':self.labelName, 'icon':self.labelIcon}
+        return item
 
 
     def valid_url(self, web_url):
