@@ -145,8 +145,8 @@ class UrlResolver(Interface):
         not_implemented(self)
     
     def get_media_labels(self):
-        item = {'title':self.labelName, 'icon':self.labelIcon}
-        return item
+        labels = {'title':self.labelName, 'icon':self.labelIcon}
+        return labels
 
 
     def valid_url(self, web_url):
