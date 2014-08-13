@@ -74,11 +74,14 @@ class UrlResolver(Interface):
     first.
     '''
     
-    labelName = "TREWQXFNLPBVMN"
+    _labelName = "TREWQXFNLPBVMN"
     '''(str) Video stream name, should be updated when a vaild URL is found'''
     
-    labelIcon = None
+    _labelIcon = None
     '''(???) Not sure about type yet, icon for stream'''
+    
+    _labelThumbnail = None
+    '''(???)'''
 
     class unresolvable():
         '''
@@ -145,7 +148,7 @@ class UrlResolver(Interface):
         not_implemented(self)
     
     def get_media_labels(self):
-        labels = {'title':self.labelName, 'icon':self.labelIcon}
+        labels = {'title':self._labelName, 'icon':self._labelIconi, 'thumbnail':self._labelThumbnail}
         return labels
 
 
