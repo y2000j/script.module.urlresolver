@@ -18,6 +18,7 @@ import urlresolver
 from urlresolver import common
 from plugnplay.interfaces import UrlResolver
 from plugnplay.interfaces import SiteAuth
+import re
 
 class HostedMediaFile:
     '''
@@ -71,6 +72,11 @@ class HostedMediaFile:
         self._host = host
         self._media_id = media_id
         
+        if (self._url and not self._host):
+            self._domain = self.__top_domain(self._url)
+        else:
+            self._domain = self.__top_domain(self._host)
+
         self.__resolvers = self.__find_resolvers()
         if url and self.__resolvers and self.__resolvers[0].get_host_and_id(url):
             self._host, self._media_id = self.__resolvers[0].get_host_and_id(url)
@@ -89,6 +95,20 @@ class HostedMediaFile:
         else:
             self.title = self._host
             
+    def __top_domain(self, domain):
+        regex = "(\w{2,}\.\w{2,3}\.\w{2}|\w{2,}\.\w{2,3})$"
+        if domain.startswith('http'):
+            domain = domain.lstrip("https:/")
+        domain += '?'
+        domain = domain[:domain.index('?')]
+        domain += '/'
+        domain = domain[:domain.index('/')]
+        domain += ':'
+        domain = domain[:domain.index(':')]
+        res = re.search(regex, domain)
+        if res:
+            return res.group(1)
+        return '*'
 
     def get_url(self):
         '''
@@ -172,7 +192,7 @@ class HostedMediaFile:
     def __find_resolvers(self):
         imps = []
         for imp in UrlResolver.implementors():
-            if imp.valid_url(self.get_url(), self.get_host()):
+            if (self._domain in imp.domains): #  or ('*' in imp.domains)
                 imps.append(imp)
         return imps
 
