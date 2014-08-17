@@ -71,18 +71,18 @@ class HostedMediaFile:
         self._host = host
         self._media_id = media_id
         
-        self._resolvers = self._find_resolvers()
-        if url and self._resolvers and self._resolvers[0].get_host_and_id(url):
-            self._host, self._media_id = self._resolvers[0].get_host_and_id(url)
-        elif self._resolvers:
-            if self._resolvers[0].isUniversal():
-                if len(self._resolvers) > 1:
-                    self._url = self._resolvers[1].get_url(host, media_id)
-                    self._host, self._media_id = self._resolvers[0].get_host_and_id(self._url)
+        self.__resolvers = self.__find_resolvers()
+        if url and self.__resolvers and self.__resolvers[0].get_host_and_id(url):
+            self._host, self._media_id = self.__resolvers[0].get_host_and_id(url)
+        elif self.__resolvers:
+            if self.__resolvers[0].isUniversal():
+                if len(self.__resolvers) > 1:
+                    self._url = self.__resolvers[1].get_url(host, media_id)
+                    self._host, self._media_id = self.__resolvers[0].get_host_and_id(self._url)
                 else:
-                    self._resolvers = []
+                    self.__resolvers = []
             else:    
-                self._url = self._resolvers[0].get_url(host, media_id)
+                self._url = self.__resolvers[0].get_url(host, media_id)
         
         if title:
             self.title = title
@@ -128,19 +128,20 @@ class HostedMediaFile:
             A direct URL to the media file that is playable by XBMC, or False
             if this was not possible. 
         '''
-        if self._resolvers:
-            resolver = self._resolvers[0]
-            common.addon.log_debug('resolving using %s plugin' % resolver.name)
-            if SiteAuth in resolver.implements:
-                common.addon.log_debug('logging in')
-                resolver.login()
-            return resolver.get_media_url(self._host, self._media_id)
-        else:
-            return False
+        if self.__resolvers:
+            for resolver in self.__resolvers:
+                common.addon.log_debug('resolving using %s plugin' % resolver.name)
+                if SiteAuth in resolver.implements:
+                    common.addon.log_debug('logging in')
+                    resolver.login()
+                result = resolver.get_media_url(self._host, self._media_id)
+                if (result):
+                    return result
+        return False
         
     def get_media_labels(self):
-        if self._resolvers:
-            resolver = self._resolvers[0]
+        if self.__resolvers:
+            resolver = self.__resolvers[0]
             common.addon.log_debug('resolving using %s plugin' % resolver.name)
             if SiteAuth in resolver.implements:
                 common.addon.log_debug('logging in')
@@ -164,11 +165,11 @@ class HostedMediaFile:
                     print 'resolvable!'
             
         '''
-        if self._resolvers:
+        if self.__resolvers:
             return True
         return False
         
-    def _find_resolvers(self):
+    def __find_resolvers(self):
         imps = []
         for imp in UrlResolver.implementors():
             if imp.valid_url(self.get_url(), self.get_host()):
