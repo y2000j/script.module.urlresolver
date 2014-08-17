@@ -59,6 +59,9 @@ class sockshareResolver(Plugin, UrlResolver, PluginSettings):
             elif "This file might have been moved, replaced or deleted.<" in html: raise Exception (host+": 404: This file might have been moved, replaced or deleted.")
             
             #Shortcut for logged in users
+            t = re.search('<title>(.+?) \|.*title>', html)
+            if t:
+                self._labelName=t.group(1)
             pattern = '<a href="(/.+?)" class="download_file_link" style="margin:0px 0px;">Download File</a>'
             link = re.search(pattern, html)
             if link:

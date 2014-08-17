@@ -48,7 +48,7 @@ class PromptfileResolver(Plugin, UrlResolver, PluginSettings):
             # Find a name for the video
             t = re.search('<span.*title="(.+?)">', html)
             if t:
-                self.labelName=t.group(1)
+                self._labelName=t.group(1)
             html = re.compile(r'clip\s*:\s*\{.*?url\s*:\s*[\"\'](.+?)[\"\']', re.DOTALL).search(html)
             if not html:
                 raise Exception ('File Not Found or removed')
