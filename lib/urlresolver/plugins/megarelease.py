@@ -33,6 +33,7 @@ net = Net()
 class MegareleaseResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "megarelease"
+    domains = [ "megarelease.org" ]
 
 
     def __init__(self):

@@ -30,6 +30,7 @@ error_logo = common.addon_path + '/resources/images/redx.png'
 class TwogbhostingResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "2gbhosting"
+    domains = [ "2gb-hosting.com" ]
 
 
     def __init__(self):

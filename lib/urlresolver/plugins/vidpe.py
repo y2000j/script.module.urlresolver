@@ -29,6 +29,8 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class vidpeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
+    name = "vidpe/hostingcup"
+    domains = [ 'vidpe.com', 'hostingcup.com' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100

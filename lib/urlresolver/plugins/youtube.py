@@ -27,6 +27,7 @@ from urlresolver.plugnplay import Plugin
 class YoutubeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "youtube"
+    domains = [ 'youtube.com', 'youtu.be' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100

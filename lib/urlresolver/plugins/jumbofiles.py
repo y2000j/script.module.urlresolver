@@ -30,6 +30,7 @@ from vidxden import unpack_js
 class JumbofilesResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "jumbofiles"
+    domains = [ "jumbofiles.com" ]
 
 
     def __init__(self):

@@ -28,6 +28,7 @@ from vidxden import unpack_js
 class HostingcupResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "hostingcup"
+    domains = [ "hostingcup.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100

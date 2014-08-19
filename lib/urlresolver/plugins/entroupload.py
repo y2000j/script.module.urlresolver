@@ -33,6 +33,7 @@ net = Net()
 class EntrouploadResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "entroupload"
+    domains = [ "entroupload.com" ]
 
 
     def __init__(self):

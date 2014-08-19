@@ -68,6 +68,7 @@ class InputWindow(xbmcgui.WindowDialog):# Cheers to Bastardsmkr code already don
 class VidxdenResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "vidxden"
+    domains = [ 'vidxden.com', 'divxden.com', 'vidbux.com' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
