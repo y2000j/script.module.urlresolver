@@ -29,7 +29,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class vidpeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "vidpe/hostingcup"
+    name = "vidpe"
     domains = [ 'vidpe.com', 'hostingcup.com' ]
 
     def __init__(self):

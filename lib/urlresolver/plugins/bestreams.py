@@ -55,6 +55,10 @@ class BestreamsResolver(Plugin, UrlResolver, PluginSettings):
             #print data
             sleep(2) # POST seems to fail is submitted too soon after GET. Page Timeout?
 
+            t = re.search('<Title>Watch (.+?)</Title>', html)
+            if t:
+                self._labelName=t.group(1)
+
             html = self.net.http_POST(web_url, data, headers=headers).content
             #print html.encode('ascii','ignore')
 

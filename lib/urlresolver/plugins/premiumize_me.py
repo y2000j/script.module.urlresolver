@@ -33,7 +33,7 @@ except ImportError:
 
 class PremiumizeMeResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "Premiumize.me"
+    name = "premiumize_me"
     domains = [ "*" ]
     media_url = None
 

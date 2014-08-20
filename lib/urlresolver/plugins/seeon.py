@@ -9,7 +9,7 @@ from urlresolver.plugnplay import Plugin
 
 class SeeonResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "seeon.tv"
+    name = "seeon"
     domains = [ "seeon.tv" ]
 
     def __init__(self):

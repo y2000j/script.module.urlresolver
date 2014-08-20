@@ -30,7 +30,7 @@ logo=os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class TunePkResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "tune.pk"
+    name = "tunepk"
     domains = [ "tune.pk" ]
 
     def __init__(self):

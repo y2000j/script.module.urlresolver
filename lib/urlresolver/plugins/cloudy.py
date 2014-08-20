@@ -32,7 +32,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class CloudyResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "cloudy.ec"
+    name = "cloudy"
     domains = [ "cloudy.ec", "cloudy.eu", "cloudy.sx", "cloudy.ch", "cloudy.com" ]
 
     def __init__(self):

@@ -35,7 +35,7 @@ ok_logo = os.path.join(common.addon_path, 'resources', 'images', 'greeninch.png'
     
 class VKResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "VK.com"
+    name = "vk"
     domains = [ "vk.com" ]
 
     def __init__(self):

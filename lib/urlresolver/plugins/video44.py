@@ -29,7 +29,7 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "video44.net"
+    name = "video44"
     domains = [ "video44.net" ]
     
     def __init__(self):

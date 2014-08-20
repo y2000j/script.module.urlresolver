@@ -31,7 +31,7 @@ net = Net()
 
 class AllmyvideosResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "mega-vids"
+    name = "megavids"
     domains = [ "mega-vids.com" ]
 
 

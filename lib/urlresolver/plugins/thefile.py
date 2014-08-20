@@ -31,7 +31,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class TheFileResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "thefile"
-    domains = [ " thefile.me" ]
+    domains = [ "thefile.me" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -45,6 +45,9 @@ class TheFileResolver(Plugin, UrlResolver, PluginSettings):
                 'Referer': web_url
             }
             html = self.net.http_GET(web_url).content
+            t = re.search('<title>Download (.+?)</title>', html)
+            if t:
+                self._labelName=t.group(1)
             #print html.encode('ascii','ignore')
             
             # check if we have a p,ac,k,e,d source

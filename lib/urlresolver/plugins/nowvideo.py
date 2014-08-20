@@ -41,6 +41,10 @@ class NowvideoResolver(Plugin, UrlResolver, PluginSettings):
         web_url = self.get_url(host, media_id)
         try:
             html = self.net.http_GET(web_url).content
+            # Find a name for the video
+            t = re.search('<src.*title=(.+?)">', html)
+            if t:
+                self._labelName=t.group(1)
             key = re.compile('flashvars.filekey=(.+?);').findall(html)
             ip_key = key[0]
             pattern = 'var %s="(.+?)".+?flashvars.file="(.+?)"'% str(ip_key)

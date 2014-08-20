@@ -26,7 +26,7 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "auengine.com"
+    name = "auengine"
     domains = [ "auengine.com" ]
 
     def __init__(self):

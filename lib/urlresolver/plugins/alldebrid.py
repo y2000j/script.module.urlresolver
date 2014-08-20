@@ -36,7 +36,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class AllDebridResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
     implements = [UrlResolver, SiteAuth, PluginSettings]
-    name = "AllDebrid"
+    name = "alldebrid"
     domains = [ '*']
     profile_path = common.profile_path    
     cookie_file = os.path.join(profile_path, '%s.cookies' % name)

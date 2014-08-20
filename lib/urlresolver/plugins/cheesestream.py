@@ -26,7 +26,7 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "cheesestream.com"
+    name = "cheesestream"
     domains = [ "cheesestream.com" ]
     
     def __init__(self):

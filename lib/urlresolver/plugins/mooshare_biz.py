@@ -31,7 +31,7 @@ net = Net()
 
 class AllmyvideosResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "mooshare"
+    name = "mooshare_biz"
     domains = [ "mooshare.biz" ]
 
 

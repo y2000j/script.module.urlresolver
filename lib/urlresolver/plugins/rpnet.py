@@ -33,7 +33,7 @@ except ImportError:
 
 class RPnetResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "RPnet"
+    name = "rpnet"
     domains = [ "*" ]
     media_url = None
     allHosters = None

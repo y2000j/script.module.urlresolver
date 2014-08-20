@@ -27,7 +27,7 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "yourupload.com"
+    name = "yourupload"
     domains = [ "yourupload.com" ]
     
     def __init__(self):
