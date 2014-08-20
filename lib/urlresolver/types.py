@@ -71,6 +71,7 @@ class HostedMediaFile:
         self._url = url
         self._host = host
         self._media_id = media_id
+        self._valid_url = None
         
         if (self._url):  # Find all resolver
             self._domain = self.__top_domain(self._url)
@@ -156,7 +157,9 @@ class HostedMediaFile:
                     resolver.login()
                 host, media_id = resolver.get_host_and_id(self._url)
                 result = resolver.get_media_url(host, media_id)
-                if result: return result
+                if result:
+                    self._valid_url = True
+                    return result
             except:
                 common.addon.log_notice("Shity resolver %s. Ignore" % resolver.name)
                 continue
@@ -193,8 +196,15 @@ class HostedMediaFile:
                     print 'resolvable!'
             
         '''
-        if self.__resolvers:
-            return True
+        for resolver in self.__resolvers:
+            try:
+                if resolver.valid_url(self._url, self._domain):
+                    self._valid_url = True
+                    return True
+            except:
+                # print sys.exc_info()
+                continue
+        self._valid_url = False
         return False
         
     def __find_resolvers(self, universal=False):
@@ -211,7 +221,8 @@ class HostedMediaFile:
 
         
     def __nonzero__(self):
-        return self.valid_url() 
+        if None == self._valid_url: return self.valid_url()
+        return self._valid_url 
         
     def __str__(self):
         return '{\'url\': \'%s\', \'host\': \'%s\', \'media_id\': \'%s\'}' % (

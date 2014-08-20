@@ -23,7 +23,7 @@ import urllib,urllib2,re,xbmc
 from urlresolver import common
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements=[UrlResolver,PluginSettings]
-    name="vodlocker.com"
+    name="vodlocker"
     domains=[ "vodlocker.com" ]
     
     def __init__(self):

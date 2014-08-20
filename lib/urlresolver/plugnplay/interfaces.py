@@ -158,7 +158,7 @@ class UrlResolver(Interface):
         return labels
 
 
-    def valid_url(self, web_url):
+    def valid_url(self, web_url, host):
         '''
         Determine whether this plugin is capable of resolving this URL. You must 
         implement this method.
