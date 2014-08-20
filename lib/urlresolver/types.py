@@ -98,7 +98,8 @@ class HostedMediaFile:
     def __top_domain(self, domain):
         regex = "(\w{2,}\.\w{2,3}\.\w{2}|\w{2,}\.\w{2,3})$"
         if domain.startswith('http'):
-            domain = domain.lstrip("https:/")
+            domain = domain.lstrip("htps")
+            domain = domain.lstrip(":/")
         domain += '?'
         domain = domain[:domain.index('?')]
         domain += '/'

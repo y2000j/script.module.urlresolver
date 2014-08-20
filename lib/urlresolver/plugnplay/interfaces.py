@@ -36,8 +36,9 @@ should be defined as follows::
 
 import urlresolver
 from urlresolver import common
-from urlresolver.plugnplay import Interface
-import sys
+from urlresolver.plugnplay import Interface, AutoloadPlugin
+import sys, re
+from fnmatch import translate
 
 def _function_id(obj, nFramesUp):
 	'''Create a string naming the function n frames up on the stack.'''
@@ -47,8 +48,8 @@ def _function_id(obj, nFramesUp):
 
 
 def not_implemented(obj=None):
-	'''Use this instead of ``pass`` for the body of abstract methods.'''
-	raise Exception("Unimplemented abstract method: %s" % _function_id(obj, 1))
+    '''Use this instead of ``pass`` for the body of abstract methods.'''
+    raise ImportError("Unimplemented abstract method: %s" % _function_id(obj, 1))
 
 
 class UrlResolver(Interface):
@@ -73,6 +74,11 @@ class UrlResolver(Interface):
     (int) The order in which plugins will be tried. Lower numbers are tried 
     first.
     '''
+    
+    # Don't support any internet domain
+    domains = ['localdomain']
+    
+    '''(array) List of domains handled by this plugin'''
     
     _labelName = "TREWQXFNLPBVMN"
     '''(str) Video stream name, should be updated when a vaild URL is found'''
@@ -348,3 +354,41 @@ class PluginSettings(Interface):
         value = common.addon.get_setting('%s_%s' % 
                                                 (self.__class__.__name__, key))
         return value
+
+class UrlStub(UrlResolver, PluginSettings, SiteAuth):
+    pass
+
+class UrlWrapper(UrlResolver, PluginSettings, SiteAuth, AutoloadPlugin):
+    _ref = UrlStub()
+    implements = []
+    _re_implements = re.compile('\s+implements\s*=\s*\[(.*)\]')
+    _re_domains = re.compile('\s+domains\s*=\s*\[(.*)\]')
+    _found_implements = False
+    _found_domains = False 
+
+    def __init__(self):
+        self.implements=[]
+        self._ref = UrlStub()
+
+    def proc_plugin_line(self, line):
+        if not self._found_domains:
+            res = self._re_domains.match(line)
+            if res:
+                self._ref.domains = res.group(1).translate(None,' "\'').split(',')
+                self._found_domains = True
+
+        if not self._found_implements:
+            res = self._re_implements.match(line)
+            if res:
+                implements_names = res.group(1).translate(None,' "\'').split(',')
+                for handler in implements_names:
+                    self.implements.append(globals()[handler])
+                self._found_implements = True
+    
+    def plugin_ready(self):
+        return self._found_domains and self._found_implements
+    
+    @classmethod
+    def implementors(klass):
+        return UrlResolver.implementors()
+

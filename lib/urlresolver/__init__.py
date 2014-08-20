@@ -31,7 +31,7 @@ import os
 import common
 import plugnplay
 from types import HostedMediaFile
-from plugnplay.interfaces import UrlResolver
+from plugnplay.interfaces import UrlResolver,UrlWrapper
 from plugnplay.interfaces import PluginSettings
 from plugnplay.interfaces import SiteAuth
 import xbmcgui
@@ -39,7 +39,7 @@ import xbmcgui
 #load all available plugins
 common.addon.log('Initializing URLResolver version: %s' % common.addon_version)
 plugnplay.set_plugin_dirs(common.plugins_path)
-plugnplay.load_plugins()
+plugnplay.scan_plugins(UrlWrapper)
 
 def resolve(web_url):
     '''
