@@ -18,7 +18,7 @@ import urlresolver
 from urlresolver import common
 from plugnplay.interfaces import UrlResolver
 from plugnplay.interfaces import SiteAuth
-import re
+import re, sys
 
 class HostedMediaFile:
     '''
@@ -66,35 +66,34 @@ class HostedMediaFile:
             media_id (str): the unique ID given to the media by the host.
         '''
         if not url and not (host and media_id) or (url and (host or media_id)):
-            raise ValueError('Set either url, or host AND media_id. ' +
+            raise ValueError('Set either url, or host AND media_id. ' + 
                              'No other combinations are valid.')
         self._url = url
         self._host = host
         self._media_id = media_id
         
-        if (self._url and not self._host):
+        if (self._url):  # Find all resolver
             self._domain = self.__top_domain(self._url)
-        else:
+            self.__resolvers = self.__find_resolvers(True)
+        else:  # Find non-universal resolvers
             self._domain = self.__top_domain(self._host)
+            self.__resolvers = self.__find_resolvers(False)
 
-        self.__resolvers = self.__find_resolvers()
-        if url and self.__resolvers and self.__resolvers[0].get_host_and_id(url):
-            self._host, self._media_id = self.__resolvers[0].get_host_and_id(url)
-        elif self.__resolvers:
-            if self.__resolvers[0].isUniversal():
-                if len(self.__resolvers) > 1:
-                    self._url = self.__resolvers[1].get_url(host, media_id)
-                    self._host, self._media_id = self.__resolvers[0].get_host_and_id(self._url)
-                else:
-                    self.__resolvers = []
-            else:    
-                self._url = self.__resolvers[0].get_url(host, media_id)
-        
+        if url == '':
+            for resolver in self.__resolvers:  # Find a valid URL
+                try: 
+                    if resolver.get_url(host, media_id):
+                        self._url = resolver.get_url(host, media_id)
+                        break
+                except:
+                    # Shity resolver. Ignore
+                    continue
+
         if title:
             self.title = title
         else:
             self.title = self._host
-            
+
     def __top_domain(self, domain):
         regex = "(\w{2,}\.\w{2,3}\.\w{2}|\w{2,}\.\w{2,3})$"
         if domain.startswith('http'):
@@ -149,27 +148,35 @@ class HostedMediaFile:
             A direct URL to the media file that is playable by XBMC, or False
             if this was not possible. 
         '''
-        if self.__resolvers:
-            for resolver in self.__resolvers:
+        for resolver in self.__resolvers:
+            try:
                 common.addon.log_debug('resolving using %s plugin' % resolver.name)
                 if SiteAuth in resolver.implements:
                     common.addon.log_debug('logging in')
                     resolver.login()
-                result = resolver.get_media_url(self._host, self._media_id)
-                if (result):
-                    return result
+                host, media_id = resolver.get_host_and_id(self._url)
+                result = resolver.get_media_url(host, media_id)
+                if result: return result
+            except:
+                common.addon.log_notice("Shity resolver %s. Ignore" % resolver.name)
+                continue
+        
         return False
         
     def get_media_labels(self):
-        if self.__resolvers:
-            resolver = self.__resolvers[0]
-            common.addon.log_debug('resolving using %s plugin' % resolver.name)
-            if SiteAuth in resolver.implements:
-                common.addon.log_debug('logging in')
-                resolver.login()
-            return resolver.get_media_labels()
-        else:
-            return False
+        for resolver in self.__resolvers:
+            try:
+                common.addon.log_debug('resolving using %s plugin' % resolver.name)
+                if SiteAuth in resolver.implements:
+                    common.addon.log_debug('logging in')
+                    resolver.login()
+                result = resolver.get_media_labels()
+                if result: return result
+            except:
+                # Shity resolver. Ignore
+                common.addon.log_notice("Shity resolver %s. Ignore" % resolver.name)
+                continue
+        return False
         
     def valid_url(self):
         '''
@@ -190,12 +197,17 @@ class HostedMediaFile:
             return True
         return False
         
-    def __find_resolvers(self):
-        imps = []
-        for imp in UrlResolver.implementors():
-            if (self._domain in imp.domains): #  or ('*' in imp.domains)
-                imps.append(imp)
-        return imps
+    def __find_resolvers(self, universal=False):
+        resolvers = []
+        index = 0
+        for resolver in UrlResolver.implementors():
+            if (self._domain in resolver.domains):
+                resolvers[index:index] = [resolver]
+                index += 1
+            if (universal and ('*' in resolver.domains)):
+                # Universal resolvers at the end, because they don't behave
+                resolvers.append(resolver)
+        return resolvers
 
         
     def __nonzero__(self):
