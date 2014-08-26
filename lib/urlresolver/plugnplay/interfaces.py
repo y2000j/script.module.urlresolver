@@ -80,14 +80,8 @@ class UrlResolver(Interface):
     
     '''(array) List of domains handled by this plugin'''
     
-    _labelName = "TREWQXFNLPBVMN"
-    '''(str) Video stream name, should be updated when a vaild URL is found'''
-    
-    _labelIcon = None
-    '''(???) Not sure about type yet, icon for stream'''
-    
-    _labelThumbnail = None
-    '''(???)'''
+    _labels = {}
+    ''' '''
 
     class unresolvable():
         '''
@@ -114,6 +108,7 @@ class UrlResolver(Interface):
         def __init__(self, code=0, msg='Unknown Error'):
             self.code = code
             self.msg = msg
+            self._labels = {}
 
         def __nonzero__(self):
             return 0
@@ -154,8 +149,7 @@ class UrlResolver(Interface):
         not_implemented(self)
     
     def get_media_labels(self):
-        labels = {'title':self._labelName, 'icon':self._labelIcon, 'thumbnail':self._labelThumbnail}
-        return labels
+        return self._labels
 
 
     def valid_url(self, web_url, host):
@@ -318,10 +312,10 @@ class PluginSettings(Interface):
             A string containing XML which would be valid in 
             ``resources/settings.xml``
         '''
-        xml = '<setting id="%s_priority" ' % self.__class__.__name__
+        xml = '<setting id="%s_priority" ' % self.name
         xml += 'type="number" label="Priority" default="100"/>\n'
 
-        xml += '<setting id="%s_enabled" ' % self.__class__.__name__
+        xml += '<setting id="%s_enabled" ' % self.name
         xml += 'type="bool" label="Enabled" default="true"/>\n'
         return xml 
         
@@ -352,9 +346,12 @@ class PluginSettings(Interface):
             A string containing the value stored for the requested setting.
         '''
         value = common.addon.get_setting('%s_%s' % 
-                                                (self.__class__.__name__, key))
+                                                (self.name, key))
         return value
 
+''' Dummy class for uninitialized plugins
+    All bounded methods should be declared as "non_implemented" 
+'''
 class UrlStub(UrlResolver, PluginSettings, SiteAuth):
     pass
 

@@ -159,11 +159,12 @@ class HostedMediaFile:
                 result = resolver.get_media_url(host, media_id)
                 if result:
                     self._valid_url = True
+                    self.__resolvers = [ resolver ] # Found a valid resolver, ignore the others
                     return result
             except:
-                common.addon.log_notice("Shity resolver %s. Ignore" % resolver.name)
+                common.addon.log_debug("Shity resolver %s. Ignore" % resolver.name)
                 continue
-        
+        self.__resolvers = [] # No resolvers.
         return False
         
     def get_media_labels(self):
@@ -179,7 +180,7 @@ class HostedMediaFile:
                 # Shity resolver. Ignore
                 common.addon.log_notice("Shity resolver %s. Ignore" % resolver.name)
                 continue
-        return False
+        return {} # No labels found
         
     def valid_url(self):
         '''
@@ -196,6 +197,7 @@ class HostedMediaFile:
                     print 'resolvable!'
             
         '''
+        if None != self._valid_url: return self._valid_url
         for resolver in self.__resolvers:
             try:
                 if resolver.valid_url(self._url, self._domain):
@@ -205,6 +207,7 @@ class HostedMediaFile:
                 # print sys.exc_info()
                 continue
         self._valid_url = False
+        self.__resolvers = []
         return False
         
     def __find_resolvers(self, universal=False):

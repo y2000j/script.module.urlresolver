@@ -62,7 +62,7 @@ class sockshareResolver(Plugin, UrlResolver, PluginSettings):
             #Shortcut for logged in users
             t = re.search('<title>(.+?) \|.*title>', html)
             if t:
-                self._labelName=t.group(1)
+                self._labes['name']=t.group(1)
             pattern = '<a href="(/.+?)" class="download_file_link" style="margin:0px 0px;">Download File</a>'
             link = re.search(pattern, html)
             if link:
