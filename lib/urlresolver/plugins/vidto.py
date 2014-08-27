@@ -49,7 +49,7 @@ class vidto(Plugin, UrlResolver, PluginSettings):
             # Find a name for the video
             t = re.search('class="video-page-head">(.+?)<', html)
             if t:
-                self._labes['name']=t.group(1)
+                self._labels['title']=t.group(1)
 
             # Find a link
             r = re.search('<a id="lnk_download" href="(.+?)"', html)

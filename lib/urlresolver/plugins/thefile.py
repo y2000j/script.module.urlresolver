@@ -47,7 +47,7 @@ class TheFileResolver(Plugin, UrlResolver, PluginSettings):
             html = self.net.http_GET(web_url).content
             t = re.search('<title>Download (.+?)</title>', html)
             if t:
-                self._labes['name']=t.group(1)
+                self._labels['title']=t.group(1)
             #print html.encode('ascii','ignore')
             
             # check if we have a p,ac,k,e,d source

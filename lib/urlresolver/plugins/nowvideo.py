@@ -44,7 +44,7 @@ class NowvideoResolver(Plugin, UrlResolver, PluginSettings):
             # Find a name for the video
             t = re.search('<src.*title=(.+?)">', html)
             if t:
-                self._labes['name']=t.group(1)
+                self._labels['title']=t.group(1)
             key = re.compile('flashvars.filekey=(.+?);').findall(html)
             ip_key = key[0]
             pattern = 'var %s="(.+?)".+?flashvars.file="(.+?)"'% str(ip_key)
