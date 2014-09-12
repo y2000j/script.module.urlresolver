@@ -29,7 +29,8 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "videofun.me"
+    name = "videofun"
+    domains = [ "videofun.me" ]
     
     def __init__(self):
         p = self.get_setting('priority') or 100

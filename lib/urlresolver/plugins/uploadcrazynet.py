@@ -26,7 +26,8 @@ import re
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "uploadcrazy.net"
+    name = "uploadcrazynet"
+    domains = [ "uploadcrazy.net" ]
     
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -70,4 +71,4 @@ class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
             common.addon.log_error(hostname+': stream url not found')
             return self.unresolvable(code=0, msg='no file located') #return False
         return stream_url
-	
+

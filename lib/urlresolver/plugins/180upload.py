@@ -32,6 +32,7 @@ datapath = common.profile_path
 class OneeightyuploadResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "180upload"
+    domains = [ "180upload.com" ]
     
 
 

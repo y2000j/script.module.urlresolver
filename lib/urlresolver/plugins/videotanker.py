@@ -31,6 +31,7 @@ logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class VideoTankerResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = 'videotanker'
+    domains = [ 'videotanker.co' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -87,6 +88,12 @@ class VideoTankerResolver(Plugin, UrlResolver, PluginSettings):
                self.name in host
 
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('quality', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"High|Medium|Low",'default':"1"})
+        
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting label="Video Quality" id="%s_quality" ' % self.__class__.__name__

@@ -29,6 +29,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class PromptfileResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "promptfile"
+    domains = [ "promptfile.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -45,6 +46,10 @@ class PromptfileResolver(Plugin, UrlResolver, PluginSettings):
             for name, value in r:
                 data[name] = value
             html = self.net.http_POST(web_url, data).content
+            # Find a name for the video
+            t = re.search('<span.*title="(.+?)">', html)
+            if t:
+                self._labels['title']=t.group(1)
             html = re.compile(r'clip\s*:\s*\{.*?url\s*:\s*[\"\'](.+?)[\"\']', re.DOTALL).search(html)
             if not html:
                 raise Exception ('File Not Found or removed')

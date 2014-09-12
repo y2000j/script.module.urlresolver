@@ -30,6 +30,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class NowvideoResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "nowvideo"
+    domains = [ "nowvideo.eu","nowvideo.ch","nowvideo.sx" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -40,6 +41,10 @@ class NowvideoResolver(Plugin, UrlResolver, PluginSettings):
         web_url = self.get_url(host, media_id)
         try:
             html = self.net.http_GET(web_url).content
+            # Find a name for the video
+            t = re.search('<src.*title=(.+?)">', html)
+            if t:
+                self._labels['title']=t.group(1)
             key = re.compile('flashvars.filekey=(.+?);').findall(html)
             ip_key = key[0]
             pattern = 'var %s="(.+?)".+?flashvars.file="(.+?)"'% str(ip_key)

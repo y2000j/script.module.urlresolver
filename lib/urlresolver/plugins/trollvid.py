@@ -26,7 +26,8 @@ import re,xbmc
 
 class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "trollvid.net"
+    name = "trollvid"
+    domains = [ "trollvid.net" ]
     
     def __init__(self):
         p = self.get_setting('priority') or 100

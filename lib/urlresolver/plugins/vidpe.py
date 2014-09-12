@@ -29,6 +29,8 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class vidpeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
+    name = "vidpe"
+    domains = [ 'vidpe.com', 'hostingcup.com' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -102,6 +104,12 @@ class vidpeResolver(Plugin, UrlResolver, PluginSettings):
     def valid_url(self, url, host):
         if self.get_setting('enabled') == 'false': return False
         return re.search('http://(.+)?(vidpe|hostingcup).com/.+?.html',url) or 'vidpe' in host or 'hostingcup' in host
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('msg',
+                         {'label':'This plugin calls the vidpe addon - change settings there.',
+                          'type':'lsep'})
 
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)

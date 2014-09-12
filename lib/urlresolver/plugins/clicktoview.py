@@ -29,6 +29,7 @@ net = Net()
 class ClicktoviewResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "clicktoview"
+    domains = [ "clicktoview.org" ]
 
 
     def __init__(self):

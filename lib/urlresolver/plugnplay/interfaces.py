@@ -36,8 +36,9 @@ should be defined as follows::
 
 import urlresolver
 from urlresolver import common
-from urlresolver.plugnplay import Interface
-import sys
+from urlresolver.plugnplay import Interface, AutoloadPlugin
+import sys, re
+from fnmatch import translate
 
 def _function_id(obj, nFramesUp):
 	'''Create a string naming the function n frames up on the stack.'''
@@ -47,8 +48,8 @@ def _function_id(obj, nFramesUp):
 
 
 def not_implemented(obj=None):
-	'''Use this instead of ``pass`` for the body of abstract methods.'''
-	raise Exception("Unimplemented abstract method: %s" % _function_id(obj, 1))
+    '''Use this instead of ``pass`` for the body of abstract methods.'''
+    raise ImportError("Unimplemented abstract method: %s" % _function_id(obj, 1))
 
 
 class UrlResolver(Interface):
@@ -72,7 +73,15 @@ class UrlResolver(Interface):
     '''
     (int) The order in which plugins will be tried. Lower numbers are tried 
     first.
-    '''    
+    '''
+    
+    # Don't support any internet domain
+    domains = ['localdomain']
+    
+    '''(array) List of domains handled by this plugin'''
+    
+    _labels = {}
+    ''' '''
 
     class unresolvable():
         '''
@@ -99,6 +108,7 @@ class UrlResolver(Interface):
         def __init__(self, code=0, msg='Unknown Error'):
             self.code = code
             self.msg = msg
+            self._labels = {}
 
         def __nonzero__(self):
             return 0
@@ -137,9 +147,12 @@ class UrlResolver(Interface):
 
     def get_host_and_id(self, url):
         not_implemented(self)
+    
+    def get_media_labels(self):
+        return self._labels
 
 
-    def valid_url(self, web_url):
+    def valid_url(self, web_url, host):
         '''
         Determine whether this plugin is capable of resolving this URL. You must 
         implement this method.
@@ -299,10 +312,10 @@ class PluginSettings(Interface):
             A string containing XML which would be valid in 
             ``resources/settings.xml``
         '''
-        xml = '<setting id="%s_priority" ' % self.__class__.__name__
+        xml = '<setting id="%s_priority" ' % self.name
         xml += 'type="number" label="Priority" default="100"/>\n'
 
-        xml += '<setting id="%s_enabled" ' % self.__class__.__name__
+        xml += '<setting id="%s_enabled" ' % self.name
         xml += 'type="bool" label="Enabled" default="true"/>\n'
         return xml 
         
@@ -333,5 +346,78 @@ class PluginSettings(Interface):
             A string containing the value stored for the requested setting.
         '''
         value = common.addon.get_setting('%s_%s' % 
-                                                (self.__class__.__name__, key))
+                                                (self.name, key))
         return value
+    
+    '''
+    This method adds plugin settings to existing settings file
+    '''
+    def add_settings_xml(self):
+        self.add_setting('priority',{'label':'Priority',
+                                     'type':'number',
+                                     'default':'100'})
+        self.add_setting('enabled',{'label':'Enabled',
+                                    'type':'bool',
+                                    'default':'true'})
+    
+    '''
+    Add a setting to config
+    '''
+    def add_setting(self,_id, _elements):
+        category = None
+        ''' Add key to settings '''
+        for c in common.settings_xml.getElementsByTagName('category'):
+            if self.name == c.getAttribute('label'):
+                category = c
+        if category == None:
+            x = common.settings_xml.createElement("category")
+            x.setAttribute('label', self.name)
+            category = x
+            common.settings_xml.childNodes[0].appendChild(category)
+        tx = common.settings_xml.createElement('setting')
+        tx.setAttribute('id', self.name+'_'+_id)
+        for key, value in _elements.iteritems():
+            tx.setAttribute(key, value)
+            category.appendChild(tx)
+
+
+''' Dummy class for uninitialized plugins
+    All bounded methods should be declared as "non_implemented" 
+'''
+class UrlStub(UrlResolver, PluginSettings, SiteAuth):
+    pass
+
+class UrlWrapper(UrlResolver, PluginSettings, SiteAuth, AutoloadPlugin):
+    _ref = UrlStub()
+    implements = []
+    _re_implements = re.compile('\s+implements\s*=\s*\[(.*)\]')
+    _re_domains = re.compile('\s+domains\s*=\s*\[(.*)\]')
+    _found_implements = False
+    _found_domains = False 
+
+    def __init__(self):
+        self.implements=[]
+        self._ref = UrlStub()
+
+    def proc_plugin_line(self, line):
+        if not self._found_domains:
+            res = self._re_domains.match(line)
+            if res:
+                self._ref.domains = res.group(1).translate(None,' "\'').split(',')
+                self._found_domains = True
+
+        if not self._found_implements:
+            res = self._re_implements.match(line)
+            if res:
+                implements_names = res.group(1).translate(None,' "\'').split(',')
+                for handler in implements_names:
+                    self.implements.append(globals()[handler])
+                self._found_implements = True
+    
+    def plugin_ready(self):
+        return self._found_domains and self._found_implements
+    
+    @classmethod
+    def implementors(klass):
+        return UrlResolver.implementors()
+

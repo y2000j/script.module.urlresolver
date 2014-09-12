@@ -36,7 +36,8 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class MovzapZuzVideoResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "movzap|zuzvideo"
+    name = "movzap"
+    domains = [ "movzap.com", "zuzvideo.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100

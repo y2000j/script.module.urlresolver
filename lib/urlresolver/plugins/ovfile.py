@@ -29,7 +29,8 @@ from vidxden import unpack_js
 
 class OvfileResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "ovile"
+    name = "ovfile"
+    domains = [ "ovile.com" ]
 
 
     def __init__(self):

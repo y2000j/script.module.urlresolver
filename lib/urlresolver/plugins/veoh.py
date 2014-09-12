@@ -27,6 +27,7 @@ from urlresolver.plugnplay import Plugin
 class VeohResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "veoh"
+    domains = [ "veoh.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -82,6 +83,12 @@ class VeohResolver(Plugin, UrlResolver, PluginSettings):
     def valid_url(self, url, host):
         if self.get_setting('enabled') == 'false': return False
         return re.search('www.veoh.com/watch/.+',url) or re.search('www.veoh.com/.+?permalinkId=.+',url) or 'veoh' in host
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('msg',
+                         {'label':'This plugin calls the veoh addon - change settings there.',
+                          'type':'lsep'})
 
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)

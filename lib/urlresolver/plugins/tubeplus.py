@@ -27,7 +27,8 @@ from urlresolver.plugnplay import Plugin
 
 class TubeplusResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver]
-    name = "tubeplus.me"
+    name = "tubeplus"
+    domains = [ "tubeplus.me" ]
     
     def __init__(self):
         self.net = Net()

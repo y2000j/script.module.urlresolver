@@ -31,6 +31,7 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class BestreamsResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "bestreams"
+    domains = [ "bestreams.net" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -53,6 +54,10 @@ class BestreamsResolver(Plugin, UrlResolver, PluginSettings):
             data.update({'imhuman': 'Proceed to video'})
             #print data
             sleep(2) # POST seems to fail is submitted too soon after GET. Page Timeout?
+
+            t = re.search('<Title>Watch (.+?)</Title>', html)
+            if t:
+                self._labels['title']=t.group(1)
 
             html = self.net.http_POST(web_url, data, headers=headers).content
             #print html.encode('ascii','ignore')

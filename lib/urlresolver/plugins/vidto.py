@@ -27,6 +27,7 @@ net = Net()
 class vidto(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "vidto"
+    domains = [ "vidto.me" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -45,6 +46,12 @@ class vidto(Plugin, UrlResolver, PluginSettings):
                 data[name] = value
             html = net.http_POST(url, data).content
 
+            # Find a name for the video
+            t = re.search('class="video-page-head">(.+?)<', html)
+            if t:
+                self._labels['title']=t.group(1)
+
+            # Find a link
             r = re.search('<a id="lnk_download" href="(.+?)"', html)
             if r:
                 r=re.sub(' ','%20',r.group(1))

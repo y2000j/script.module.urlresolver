@@ -33,6 +33,7 @@ logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 class billionuploads(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "billionuploads"
+    domains = [ "billionuploads.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100

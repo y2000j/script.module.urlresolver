@@ -68,6 +68,7 @@ class InputWindow(xbmcgui.WindowDialog):# Cheers to Bastardsmkr code already don
 class VidxdenResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "vidxden"
+    domains = [ 'vidxden.com', 'divxden.com', 'vidbux.com' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -153,6 +154,21 @@ class VidxdenResolver(Plugin, UrlResolver, PluginSettings):
                 'vidbux' in host)
 
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('captchax', {'type':"slider", 
+                                      'label':"Captcha Image X Position",
+                                      'range':"0,500", 'default':"335", 'option':"int"})
+        self.add_setting('captchay', {'type':"slider", 
+                                      'label':"Captcha Image Y Position",
+                                      'range':"0,500", 'default':"0", 'option':"int"})
+        self.add_setting('captchah', {'type':"slider", 
+                                      'label':"Captcha Image Height",
+                                      'range':"50,500", 'default':"180", 'option':"int"})
+        self.add_setting('captchaw', {'type':"slider", 
+                                      'label':"Captcha Image Width",
+                                      'range':"50,1000", 'default':"624", 'option':"int"})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting id="vidxden_captchax" '

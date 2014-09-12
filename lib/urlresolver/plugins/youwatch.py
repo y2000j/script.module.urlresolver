@@ -67,6 +67,7 @@ class Base36:
 class YouwatchResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
     implements = [UrlResolver, SiteAuth, PluginSettings]
     name = "youwatch"
+    domains = [ "youwatch.org" ]
     profile_path = common.profile_path    
     cookie_file  = os.path.join(profile_path, '%s.cookies' % name)
 
@@ -160,6 +161,17 @@ class YouwatchResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
                 common.addon.show_small_popup(title='[B][COLOR white]YOUWATCH LOGIN ERROR [/COLOR][/B]', msg='[COLOR red]%s[/COLOR]' % e, delay=5000, image=error_logo)
         else :
             return True
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
 
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)

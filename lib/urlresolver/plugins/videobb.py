@@ -18,6 +18,7 @@ except ImportError:
 class VideobbResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "videobb"
+    domains = [ "videobb.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -114,6 +115,12 @@ class VideobbResolver(Plugin, UrlResolver, PluginSettings):
                         '(e/|video/|watch_video.php\?v=)' +
                         '[0-9A-Za-z]+', url) or 'videobb' in host
 
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('q', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"240p|480p|Maximum",'default':"2"})
 
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)

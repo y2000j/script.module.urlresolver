@@ -29,6 +29,7 @@ net = Net()
 class veeHDResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
     implements = [UrlResolver, SiteAuth, PluginSettings]
     name = "veeHD"
+    domains = [ "veehd.com" ]
     profile_path = common.profile_path
     cookie_file = os.path.join(profile_path, '%s.cookies' % name)
     
@@ -106,6 +107,17 @@ class veeHDResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
         
         
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting id="veeHDResolver_login" '

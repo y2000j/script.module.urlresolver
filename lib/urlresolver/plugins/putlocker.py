@@ -35,7 +35,8 @@ error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class PutlockerResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "putlocker/filedrive/firedrive"
+    name = "putlocker"
+    domains = [ "putlocker.com", "filedrive.com", "firedrive.com" ]
     profile_path = common.profile_path
     cookie_file = os.path.join(profile_path, 'putlocker.cookies')
 
@@ -246,17 +247,33 @@ class PutlockerResolver(Plugin, UrlResolver, PluginSettings):
         else: return True
 
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('quality', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"FLV|Maximum",'default':"0"})
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
+        self.add_setting('notify', 
+                         {'type':'bool','label':'Notify on login','default':'false'})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
-        xml += '<setting label="Highest Quality" id="%s_quality" ' % self.__class__.__name__
+        xml += '<setting label="Highest Quality" id="%s_quality" ' % self.name
         xml += 'type="enum" values="FLV|Maximum" default="0" />\n'
-        xml += '<setting id="%s_login" ' % self.__class__.__name__
+        xml += '<setting id="%s_login" ' % self.name
         xml += 'type="bool" label="login" default="false"/>\n'
-        xml += '<setting id="%s_username" enable="eq(-1,true)" ' % self.__class__.__name__
+        xml += '<setting id="%s_username" enable="eq(-1,true)" ' % self.name
         xml += 'type="text" label="username" default=""/>\n'
-        xml += '<setting id="%s_password" enable="eq(-2,true)" ' % self.__class__.__name__
+        xml += '<setting id="%s_password" enable="eq(-2,true)" ' % self.name
         xml += 'type="text" label="password" option="hidden" default=""/>\n'
-        xml += '<setting id="%s_notify" ' % self.__class__.__name__
+        xml += '<setting id="%s_notify" ' % self.name
         xml += 'type="bool" label="Notify on login" default="false"/>\n'
         return xml
 

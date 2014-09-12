@@ -27,6 +27,7 @@ from urlresolver.plugnplay import Plugin
 class YoutubeResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "youtube"
+    domains = [ 'youtube.com', 'youtu.be' ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -57,12 +58,17 @@ class YoutubeResolver(Plugin, UrlResolver, PluginSettings):
             common.addon.log_error('youtube: video id not found')
             return self.unresolvable(code=0, msg="youtube: video id not found")
 
-
     def valid_url(self, url, host):
         if self.get_setting('enabled') == 'false': return False
-        return re.match('http://(((www.)?youtube.+?(v|embed)(=|/))|' +
+        return re.match('http[s]*://(((www.|m.)?youtube.+?(v|embed)(=|/))|' +
                         'youtu.be/)[0-9A-Za-z_\-]+', 
                         url) or 'youtube' in host or 'youtu.be' in host
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('msg',
+                         {'label':'This plugin calls the Youtube addon - change settings there.',
+                          'type':'lsep'})
 
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)

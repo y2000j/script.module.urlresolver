@@ -32,6 +32,7 @@ net = Net()
 class VidbullResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "vidbull"
+    domains = [ "vidbull.com" ]
 
 
     def __init__(self):
