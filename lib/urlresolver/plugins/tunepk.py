@@ -96,6 +96,12 @@ class TunePkResolver(Plugin, UrlResolver, PluginSettings):
                self.name in host
 
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('quality', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"High|Medium|Low",'default':"0"})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting label="Video Quality" id="%s_quality" ' % self.__class__.__name__

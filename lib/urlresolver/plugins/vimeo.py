@@ -60,6 +60,12 @@ class VimeoResolver(Plugin, UrlResolver, PluginSettings):
         return re.match('http://(.+)?vimeo.com/(video\/)?[0-9]+',
                         url) or 'vimeo' in host
 
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('msg',
+                         {'label':'This plugin calls the vimeo addon - change settings there.',
+                          'type':'lsep'})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting label="This plugin calls the vimeo addon - '

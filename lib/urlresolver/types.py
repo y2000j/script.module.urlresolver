@@ -217,9 +217,8 @@ class HostedMediaFile:
             if (self._domain in resolver.domains):
                 resolvers[index:index] = [resolver]
                 index += 1
-            if (universal and ('*' in resolver.domains)):
-                # Universal resolvers at the end, because they don't behave
-                resolvers.append(resolver)
+            elif (universal and ('*' in resolver.domains)):
+                resolvers[index:index] = [resolver]
         return resolvers
 
         

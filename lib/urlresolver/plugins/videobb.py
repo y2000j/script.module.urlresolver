@@ -116,6 +116,12 @@ class VideobbResolver(Plugin, UrlResolver, PluginSettings):
                         '[0-9A-Za-z]+', url) or 'videobb' in host
 
 
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('q', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"240p|480p|Maximum",'default':"2"})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting label="Highest Quality" id="VideobbResolver_q" '

@@ -121,11 +121,11 @@ class Interface():
   Create a Plugin class, and add a implementor from the newly created class
 '''
 class PluginMeta(type):
-  
+
     def __new__(metaclass, classname, bases, attrs):
         new_class = super(PluginMeta, metaclass).__new__(metaclass, classname,
                                                          bases, attrs)
-    
+
         new_class_instance = new_class()
         if attrs.has_key('implements'):
             for interface in attrs['implements']:
@@ -156,9 +156,9 @@ AutoloadPlugin = AutoloadMeta('AutoloadPlugin', (object, ), {})
 
 ''' More functions '''
 def set_plugin_dirs(*dirs):
-  for d in dirs:
-    common.addon.log_debug('adding plugin dir: %s' % d)
-    plugin_dirs.append(d)  
+    for d in dirs:
+        common.addon.log_debug('adding plugin dir: %s' % d)
+        plugin_dirs.append(d)  
 
 def load_plugin(mod):
     common.addon.log_notice('loading plugin: %s' % mod.name)
@@ -170,14 +170,24 @@ def load_plugins():
         sys.path.append(d)
         py_files = glob(join(d, '*.py'))
 
-        # Remove ".py" for proper importing
+        #Remove ".py" for proper importing
         modules = [basename(f[:-3]) for f in py_files]
         for mod_name in modules:
             imported_module = __import__(mod_name, globals(), locals())
             sys.modules[mod_name] = imported_module
+        for d in plugin_dirs:
+            sys.path.append(d)
+            py_files = glob(join(d, '*.py'))
+
+            # Remove ".py" for proper importing
+            modules = [basename(f[:-3]) for f in py_files]
+            for mod_name in modules:
+                imported_module = __import__(mod_name, globals(), locals())
+                sys.modules[mod_name] = imported_module
 
 def scan_plugins(wrappercls):
     re_class = re.compile('class\s+.*Plugin')
+    dirty = False
     for d in plugin_dirs:
         sys.path.append(d)
         py_files = glob(join(d, '*.py'))
@@ -192,8 +202,19 @@ def scan_plugins(wrappercls):
                 else:
                     found_plugin.proc_plugin_line(line)
                     if found_plugin.plugin_ready():
+                        _enabled = found_plugin.get_setting('enabled')
+                        if _enabled == "false": break
+                        _priority = found_plugin.get_setting('enabled')
+                        try:
+                            found_plugin.priority = int(_priority)
+                        except ValueError:
+                            found_plugin.priority = 100
                         for cls in found_plugin.implements:
                             common.addon.log_debug("module %s supports %s" % (mod_name, cls))
                             man.add_implementor(cls, found_plugin)
-
-                        break
+                        if _priority == "":
+                            load_plugin(found_plugin)
+                            found_plugin.add_settings_xml()
+                            dirty = True
+                        break # Next file
+    if dirty: common._update_settings_xml()

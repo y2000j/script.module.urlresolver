@@ -92,8 +92,14 @@ class FacebookResolver(Plugin, UrlResolver, PluginSettings):
                self.name in host
 
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('quality', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"High|Standard",'default':"0"})
+        
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
-        xml += '<setting label="Video Quality" id="%s_quality" ' % self.__class__.__name__
+        xml += '<setting label="Video Quality" id="%s_quality" ' % self.name
         xml += 'type="enum" values="High|Standard" default="0" />\n'
         return xml

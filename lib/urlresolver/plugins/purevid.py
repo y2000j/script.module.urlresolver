@@ -111,6 +111,23 @@ class purevid(Plugin, UrlResolver, SiteAuth, PluginSettings):
             return False
                     
     #PluginSettings methods
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
+        self.add_setting('quality', 
+                         {'label':"Video Quality",'type':'enum',
+                          'values':"FLV|Maximum",'default':"0"})
+        self.add_setting('msg',
+                         {'label':'This plugin calls the Purevid urlresolver - change settings there.',
+                          'type':'lsep'})
+        
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting id="purevid_login" '        
@@ -119,7 +136,7 @@ class purevid(Plugin, UrlResolver, SiteAuth, PluginSettings):
         xml += 'type="text" label="     username" default=""/>\n'
         xml += '<setting id="purevid_password" enable="eq(-2,true)" '
         xml += 'type="text" label="     password" option="hidden" default=""/>\n'
-        xml += '<setting label="Video quality" id="%s_quality" ' % self.__class__.__name__
+        xml += '<setting label="Video quality" id="%s_quality" ' % self.name
         xml += 'type="enum" values="FLV|Maximum" default="0" />\n'
         xml += '<setting label="This plugin calls the Purevid urlresolver - '
         xml += 'change settings there." type="lsep" />\n'

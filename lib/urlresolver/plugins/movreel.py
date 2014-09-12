@@ -143,13 +143,24 @@ class movreelResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
         return (re.match('http://(www.)?movreel.com/' +
                          '[0-9A-Za-z]+', url) or
                          'movreel' in host)
+
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
     
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
-        xml += '<setting id="movreelResolver_login" '
+        xml += '<setting id="movreel_login" '
         xml += 'type="bool" label="login" default="false"/>\n'
-        xml += '<setting id="movreelResolver_username" enable="eq(-1,true)" '
+        xml += '<setting id="movreel_username" enable="eq(-1,true)" '
         xml += 'type="text" label="username" default=""/>\n'
-        xml += '<setting id="movreelResolver_password" enable="eq(-2,true)" '
+        xml += '<setting id="movreel_password" enable="eq(-2,true)" '
         xml += 'type="text" label="password" option="hidden" default=""/>\n'
         return xml

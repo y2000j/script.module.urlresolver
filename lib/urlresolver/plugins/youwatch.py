@@ -162,6 +162,17 @@ class YouwatchResolver(Plugin, UrlResolver, SiteAuth, PluginSettings):
         else :
             return True
 
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('login', 
+                         {'type':'bool','label':'login','default':'false'})
+        self.add_setting('username', 
+                         {'enable':'eq(-1,true)','type':'text',
+                          'label':'username','default':''})
+        self.add_setting('passsword',
+                         {'enable':'eq(-2,true)','type':'text',
+                          'label':'password','option':'hidden','default':''})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting id="YouwatchResolver_login" '        

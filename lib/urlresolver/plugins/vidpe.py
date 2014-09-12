@@ -105,6 +105,12 @@ class vidpeResolver(Plugin, UrlResolver, PluginSettings):
         if self.get_setting('enabled') == 'false': return False
         return re.search('http://(.+)?(vidpe|hostingcup).com/.+?.html',url) or 'vidpe' in host or 'hostingcup' in host
 
+    def add_settings_xml(self):
+        PluginSettings.add_settings_xml(self)
+        self.add_setting('msg',
+                         {'label':'This plugin calls the vidpe addon - change settings there.',
+                          'type':'lsep'})
+
     def get_settings_xml(self):
         xml = PluginSettings.get_settings_xml(self)
         xml += '<setting label="This plugin calls the vidpe addon - '

@@ -159,35 +159,10 @@ def display_settings():
         All changes made to these setting by the user are global and will 
         affect any addon that uses :mod:`urlresolver` and its plugins.
     '''
-    _update_settings_xml()
+    common._update_settings_xml()
     common.addon.show_settings()
         
         
-def _update_settings_xml():
-    '''
-    This function writes a new ``resources/settings.xml`` file which contains
-    all settings for this addon and its plugins.
-    '''
-    try:
-        try:
-            os.makedirs(os.path.dirname(common.settings_file))
-        except OSError:
-            pass
-
-        f = open(common.settings_file, 'w')
-        try:
-            f.write('<?xml version="1.0" encoding="utf-8" standalone="yes"?>\n')
-            f.write('<settings>\n')    
-            for imp in PluginSettings.implementors():
-                f.write('<category label="%s">\n' % imp.name)
-                f.write(imp.get_settings_xml())
-                f.write('</category>\n')
-            f.write('</settings>')
-        finally:
-            f.close
-    except IOError:
-        common.addon.log_error('error writing ' + common.settings_file)
-
 
 #make sure settings.xml is up to date
-_update_settings_xml()
+#_update_settings_xml()

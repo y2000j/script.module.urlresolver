@@ -348,6 +348,38 @@ class PluginSettings(Interface):
         value = common.addon.get_setting('%s_%s' % 
                                                 (self.name, key))
         return value
+    
+    '''
+    This method adds plugin settings to existing settings file
+    '''
+    def add_settings_xml(self):
+        self.add_setting('priority',{'label':'Priority',
+                                     'type':'number',
+                                     'default':'100'})
+        self.add_setting('enabled',{'label':'Enabled',
+                                    'type':'bool',
+                                    'default':'true'})
+    
+    '''
+    Add a setting to config
+    '''
+    def add_setting(self,_id, _elements):
+        category = None
+        ''' Add key to settings '''
+        for c in common.settings_xml.getElementsByTagName('category'):
+            if self.name == c.getAttribute('label'):
+                category = c
+        if category == None:
+            x = common.settings_xml.createElement("category")
+            x.setAttribute('label', self.name)
+            category = x
+            common.settings_xml.childNodes[0].appendChild(category)
+        tx = common.settings_xml.createElement('setting')
+        tx.setAttribute('id', self.name+'_'+_id)
+        for key, value in _elements.iteritems():
+            tx.setAttribute(key, value)
+            category.appendChild(tx)
+
 
 ''' Dummy class for uninitialized plugins
     All bounded methods should be declared as "non_implemented" 
